@@ -1,2 +1,2 @@
 # RecAE
-Recurrent Autoencoder for Time Series Anomaly Detection
+PyTorch implementation of Recurrent Neural Networks based Autoencoder for Time Series Anomaly Detection
