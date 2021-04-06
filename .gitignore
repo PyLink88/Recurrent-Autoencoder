@@ -22,7 +22,7 @@ Usefull_Link.py
 create_config.py
 ecg5000_data_preparation.py
 
-# Environment
+# Env
 rnn_ae_env/*
 
 # Notebooks
