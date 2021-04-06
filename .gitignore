@@ -1,0 +1,31 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Pycharm
+.idea/
+
+# Data
+data/*
+!data/.keep
+
+# Experiments
+experiments/*
+!experiments/.keep
+
+# Personal files
+Usefull_Link.py
+create_config.py
+ecg5000_data_preparation.py
+
+# Env
+rnn_ae_env/*
+
+# Notebooks
+notebooks/*
+!notebooks/.keep
+
