@@ -16,6 +16,7 @@ A PyTorch implementation of [LSTM-based Encoder-Decoder for Multi-sensor Anomaly
 
 
 ### Project Structure:
+The project structure is based on the following [Pytorch Project Template](https://github.com/moemen95/PyTorch-Project-Template)
 ```
 ├── agents
 |  └── rnn_autoencoder.py # the main training agent for the recurrent NN-based AE
