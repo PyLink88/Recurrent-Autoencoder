@@ -43,7 +43,9 @@ The project structure is based on the following [Pytorch Project Template](https
 
 In the encoder each vector <img src="https://render.githubusercontent.com/render/math?math=x^{(t)}"> of a time-window <img src="https://render.githubusercontent.com/render/math?math=x"> of length <img src="https://render.githubusercontent.com/render/math?math=L"> is fed into a recurrent unit to perform the following computation: 
 
-<h1 align='center'> <img src="https://render.githubusercontent.com/render/math?math=h_{E}^{(t)} = f(h_{E}^{(t-1)}, x^{(t)})"></h1>
+<h1 align='center'> <img src="https://latex.codecogs.com/svg.latex?\large&space;h^{(t)}_{E}=f(x^{(t-1)},&space;h^{(t-1)}_{E};&space;\theta_{E})" title="\large h^{(t)}_{E}=f(x^{(t-1)},&space;h^{(t-1)}_{E};&space;\theta_{E})" /></h1>
+
+
 
 
 #### Decoder
@@ -51,6 +53,10 @@ In the encoder each vector <img src="https://render.githubusercontent.com/render
 
 In the decoder we reconstruct the time series <img src="https://render.githubusercontent.com/render/math?math=x"> in reverse order: 
 
+<h2 align='center'><img src="https://latex.codecogs.com/svg.latex?\large&space;h^{(t)}_{D}=f(\hat{x}^{(t&plus;1)},&space;h^{(t&plus;1)}_{D};&space;\theta_{D})" title="\large h^{(t)}_{D}=f(\hat{x}^{(t&plus;1)},&space;h^{(t&plus;1)}_{D};&space;\theta_{D})" /></h2>
+
+
+<h3 align='center'> <img src="https://latex.codecogs.com/svg.latex?\large&space;\hat{x}^{(t)}&space;=&space;Ah^{(t)}_{D}&plus;b" title="\large \hat{x}^{(t)} = Ah^{(t)}_{D}+b" />  </h3>
 
 
 
