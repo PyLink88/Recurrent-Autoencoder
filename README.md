@@ -43,4 +43,5 @@ The project structure is based on the following [Pytorch Project Template](https
 #### Decoder
 ![alt text](./utils/assets/decoder.png "Decoder")
 
-<img src="https://render.githubusercontent.com/render/math?math=e^{i \pi} = -1">
+
+<img src="https://render.githubusercontent.com/render/math?math=h_{E}^{(t)} = f(h_{E}^{(t-1)}, x^{(t)})">
