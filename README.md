@@ -42,11 +42,18 @@ The project structure is based on the following [Pytorch Project Template](https
 
 
 In the encoder each vector <img src="https://render.githubusercontent.com/render/math?math=x^{(t)}"> of a time-window <img src="https://render.githubusercontent.com/render/math?math=x"> of length <img src="https://render.githubusercontent.com/render/math?math=L"> is fed into a recurrent unit to perform the following computation: 
-<h1 align='center><img src="https://render.githubusercontent.com/render/math?math=h_{E}^{(t)} = f(h_{E}^{(t-1)}, x^{(t)})"></h1>
+
+<h1 align='center'> <img src="https://render.githubusercontent.com/render/math?math=h_{E}^{(t)} = f(h_{E}^{(t-1)}, x^{(t)})"></h1>
 
 
 #### Decoder
 ![alt text](./utils/assets/decoder.png "Decoder")
 
+In the decoder we reconstruct the time series <img src="https://render.githubusercontent.com/render/math?math=x"> in reverse order: 
 
-<img src="https://render.githubusercontent.com/render/math?math=h_{E}^{(t)} = f(h_{E}^{(t-1)}, x^{(t)})">
+
+
+
+
+
+
