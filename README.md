@@ -37,6 +37,6 @@ The project structure is based on the following [Pytorch Project Template](https
 
 ### Model
 #### Encoder
-![alt text]("https://github.com/PyLink88/RecAE/blob/main/utils/assets/decoder.png")
+!("https://github.com/PyLink88/RecAE/blob/main/utils/assets/decoder.png")
 
 
