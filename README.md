@@ -38,5 +38,5 @@ The project structure is based on the following [Pytorch Project Template](https
 ### Model
 #### Encoder
 
-![alt text](./utils/assets/encoder.png "Loss during training")
+
 
