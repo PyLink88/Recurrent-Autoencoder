@@ -16,6 +16,7 @@ A PyTorch implementation of [LSTM-based Encoder-Decoder for Multi-sensor Anomaly
 
 
 ### Project Structure:
+The project structure is based on the following [Pytorch Project Template](https://github.com/moemen95/PyTorch-Project-Template)
 ```
 ├── agents
 |  └── rnn_autoencoder.py # the main training agent for the recurrent NN-based AE
@@ -29,9 +30,8 @@ A PyTorch implementation of [LSTM-based Encoder-Decoder for Multi-sensor Anomaly
 |  └── ecg5000.py # dataloader for ECG5000 dataset
 ├── data
 |  └── ECG5000  # contains all ECG time series
-├── utils # utilities folder containing metrics , config parsing, etc
-|  └── assets
+├── utils # utilities folder containing metrics, checkpoints and arg parsing (configs).
 ├── main.py
-├── run.sh
+
 ```
 
