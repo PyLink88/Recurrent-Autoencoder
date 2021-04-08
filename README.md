@@ -37,6 +37,7 @@ The project structure is based on the following [Pytorch Project Template](https
 
 ### Model
 #### Encoder
-!("https://github.com/PyLink88/RecAE/blob/main/utils/assets/decoder.png")
 
 
+
+![alt text](./utils/assets/decoder.png "Loss during training")
