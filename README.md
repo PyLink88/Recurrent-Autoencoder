@@ -7,6 +7,8 @@ A PyTorch implementation of [LSTM-based Encoder-Decoder for Multi-sensor Anomaly
 - [RecAE-PyTorch](#recae-pytorch)
     - [Project Structure](#project-structure)
     - [Model](#model)
+    - [Requirements](#requirements)
+    - [Usage](#usage)
 
 
 ### Project Structure:
@@ -40,8 +42,6 @@ In the encoder each vector <img src="https://render.githubusercontent.com/render
 <h1 align='center'> <img src="https://latex.codecogs.com/svg.latex?\large&space;h^{(t)}_{E}=f(x^{(t-1)},&space;h^{(t-1)}_{E};&space;\theta_{E})" title="\large h^{(t)}_{E}=f(x^{(t-1)},&space;h^{(t-1)}_{E};&space;\theta_{E})" /> </h1>
 
 
-
-
 #### Decoder
 ![alt text](./utils/assets/decoder.png "Decoder")
 
@@ -52,7 +52,11 @@ In the decoder we reconstruct the time series <img src="https://render.githubuse
 
 <h3 align='center'><img src="https://latex.codecogs.com/svg.latex?\large&space;\hat{x}^{(t)}&space;=&space;Ah^{(t)}_{D}&plus;b" title="\large \hat{x}^{(t)} = Ah^{(t)}_{D}+b" /> </h3>
 
+### Requirements
+Check [requirements.txt](https://github.com/PyLink88/Recurrent-Autoencoder/blob/main/requirements.txt).
 
-
-
+### Usage
+- To run the project, you need to add your configurations into the folder ```configs/``` as found [here](https://github.com/PyLink88/Recurrent-Autoencoder/blob/main/configs/config_rnn_ae.json)
+- ``` python main.py  configs/config_rnn_ae.json```
+- To run on a GPU, you need to enable cuda in the config file.
 
