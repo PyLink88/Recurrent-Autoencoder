@@ -1,4 +1,4 @@
-# RecAE
+# Recurrent Neural Networks-based Autoencoders
 A PyTorch implementation of [LSTM-based Encoder-Decoder for Multi-sensor Anomaly Detection](https://arxiv.org/pdf/1607.00148.pdf)
 
 
