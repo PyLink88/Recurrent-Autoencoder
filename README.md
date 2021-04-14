@@ -7,6 +7,7 @@ A PyTorch implementation of [LSTM-based Encoder-Decoder for Multi-sensor Anomaly
 - [RecAE-PyTorch](#recae-pytorch)
     - [Project Structure](#project-structure)
     - [Model](#model)
+    - [Data](#data)
     - [Requirements](#requirements)
     - [Usage](#usage)
 
@@ -55,6 +56,8 @@ In the decoder we reconstruct the time series <img src="https://render.githubuse
 
 
 <h3 align='center'><img src="https://latex.codecogs.com/svg.latex?\large&space;\hat{x}^{(t)}&space;=&space;Ah^{(t)}_{D}&plus;b" title="\large \hat{x}^{(t)} = Ah^{(t)}_{D}+b" /> </h3>
+
+### Data
 
 ### Requirements
 Check [requirements.txt](https://github.com/PyLink88/Recurrent-Autoencoder/blob/main/requirements.txt).
