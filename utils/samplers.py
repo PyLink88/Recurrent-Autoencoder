@@ -26,11 +26,12 @@ class StratifiedSampler(Sampler):
         if torch.is_tensor(y):
             y = y.numpy()
         assert len(y.shape) == 1, 'label array must be 1D'
+
         self.X = torch.randn(len(y), 1).numpy()
         self.y = y
         self.shuffle = shuffle
         self.rnd_st = random_state
-        self.n_batches = n_batches = int(len(y) / batch_size)
+        self.n_batches = int(len(y) / batch_size)
 
     def __iter__(self):
         skf = StratifiedKFold(n_splits=self.n_batches, shuffle=self.shuffle)
@@ -39,3 +40,17 @@ class StratifiedSampler(Sampler):
 
     def __len__(self):
         return len(self.y)
+
+
+if __name__ == '__main__':
+    from torch.utils.data import DataLoader, TensorDataset, Dataset
+
+    y = torch.tensor([0, 0, 0, 0, 0, 0,0,0,0,0
+                      ,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 , 1, 1, 1, 1,1,1,1,1,1,1,1,1,1,1,1])#.numpy()
+    x = torch.ones([len(y),2])
+
+    dataset = TensorDataset(x, y)
+    my_sampler = StratifiedSampler(y,10,10)
+    loader = DataLoader(dataset, batch_sampler = my_sampler)
+
+
