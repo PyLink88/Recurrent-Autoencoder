@@ -30,11 +30,13 @@ class StratifiedSampler(Sampler):
         self.X = torch.randn(len(y), 1).numpy()
         self.y = y
         self.shuffle = shuffle
-        self.rnd_st = random_state
+        self.rnd_state = random_state
         self.n_batches = int(len(y) / batch_size)
 
     def __iter__(self):
-        skf = StratifiedKFold(n_splits=self.n_batches, shuffle=self.shuffle)
+        skf = StratifiedKFold(n_splits = self.n_batches,
+                              shuffle=self.shuffle,
+                              random_state = self.rnd_state)
         for train_idx, test_idx in skf.split(self.X, self.y):
             yield test_idx
 
@@ -43,14 +45,22 @@ class StratifiedSampler(Sampler):
 
 
 if __name__ == '__main__':
-    from torch.utils.data import DataLoader, TensorDataset, Dataset
 
-    y = torch.tensor([0, 0, 0, 0, 0, 0,0,0,0,0
-                      ,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 , 1, 1, 1, 1,1,1,1,1,1,1,1,1,1,1,1])#.numpy()
-    x = torch.ones([len(y),2])
+    from torch.utils.data import DataLoader, TensorDataset
 
+    y1 = torch.zeros([50,1])
+    y2 = torch.ones([12, 1])
+    y = torch.cat([y1, y2], axis = 0).squeeze()
+
+    x = torch.ones([len(y), 2])
+    x[10,:] = 3.14
+    x[-21,:] = 392
     dataset = TensorDataset(x, y)
     my_sampler = StratifiedSampler(y,10,10)
     loader = DataLoader(dataset, batch_sampler = my_sampler)
+    for x, y in loader:
+        print(x)
+
+
 
 
