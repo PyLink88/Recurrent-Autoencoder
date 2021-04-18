@@ -6,6 +6,7 @@ import numpy as np
 
 import torch
 from torch.utils.data import DataLoader, TensorDataset, Dataset
+from utils.samplers import StratifiedSampler
 
 
 class ECG500DataLoader:
@@ -13,8 +14,12 @@ class ECG500DataLoader:
         self.config = config
 
         # Loading training data
-        X_train = np.load(self.config.data_folder + self.config.X_train).astype(np.float32)
-        y_train = np.load(self.config.data_folder + self.config.y_train).astype(np.float32)
+        if self.config.training_type == 'one_class':
+            X_train = np.load(self.config.data_folder + self.config.X_train).astype(np.float32)
+            y_train = np.load(self.config.data_folder + self.config.y_train).astype(np.float32)
+        else:
+            X_train = np.load(self.config.data_folder + self.config.X_train_p).astype(np.float32)
+            y_train = np.load(self.config.data_folder + self.config.y_train_p).astype(np.float32)
         
         # Loading validation data
         if self.config.validation_type == 'one_class':
@@ -40,7 +45,15 @@ class ECG500DataLoader:
         validation = TensorDataset(X_val, y_val)
 
         # Dataloader
-        self.train_loader = DataLoader(training, batch_size = self.config.batch_size, shuffle = True)
+        if self.config.training_type == 'one_class':
+            self.train_loader = DataLoader(training, batch_size = self.config.batch_size, shuffle = True)
+
+        else:
+            sampler = StratifiedSampler(y_train,
+                                        batch_size =self.config.batch_size,
+                                        random_state =self.config.sampler_random_state)
+            self.train_loader = DataLoader(training, batch_sampler = sampler)
+
         self.valid_loader = DataLoader(validation, batch_size = self.config.batch_size_val, shuffle = False)
 
         # Number of batches
