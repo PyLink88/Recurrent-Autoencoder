@@ -19,6 +19,7 @@ from datasets.ecg5000 import ECG500DataLoader
 from graphs.models.recurrent_autoencoder import RecurrentAE
 from graphs.losses.AUCLoss import AUCLoss
 from graphs.losses.MAELoss import MAELoss
+from graphs.losses.MSELoss import MSELoss
 
 class RecurrentAEAgent(BaseAgent):
 
@@ -148,10 +149,10 @@ class RecurrentAEAgent(BaseAgent):
             for x, y in tqdm_batch:
                 if self.cuda:
                     x, y = x.cuda(), y.cuda()               
-
+                    
                 # Model
                 x_hat = self.model(x)
-
+                
                 # Current training loss
                 cur_val_loss = self.loss(x, x_hat)
                 if np.isnan(float(cur_val_loss.item())):
