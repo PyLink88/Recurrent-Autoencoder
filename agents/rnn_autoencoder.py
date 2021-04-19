@@ -17,8 +17,8 @@ from utils.checkpoints import checkpoints_folder
 from utils.config import save_config
 from datasets.ecg5000 import ECG500DataLoader 
 from graphs.models.recurrent_autoencoder import RecurrentAE
+from graphs.losses.AUCLoss import AUCLoss
 from graphs.losses.MAELoss import MAELoss
-from graphs.losses.MSELoss import MSELoss
 
 class RecurrentAEAgent(BaseAgent):
 
@@ -111,10 +111,10 @@ class RecurrentAEAgent(BaseAgent):
                 x, y = x.cuda(), y.cuda()
                 
             # Model
-            y_hat = self.model(x)
+            x_hat = self.model(x)
 
             # Current training loss
-            cur_tr_loss = self.loss(x, y_hat)
+            cur_tr_loss = self.loss(x, x_hat)
            
             if np.isnan(float(cur_tr_loss.item())):
                 raise ValueError('Loss is nan during training...')
@@ -150,10 +150,10 @@ class RecurrentAEAgent(BaseAgent):
                     x, y = x.cuda(), y.cuda()               
 
                 # Model
-                y_hat = self.model(x)
+                x_hat = self.model(x)
 
                 # Current training loss
-                cur_val_loss = self.loss(x, y_hat)
+                cur_val_loss = self.loss(x, x_hat)
                 if np.isnan(float(cur_val_loss.item())):
                     raise ValueError('Loss is nan during validation...')
 
@@ -224,3 +224,7 @@ class RecurrentAEAgent(BaseAgent):
         """
         self.save_checkpoint()
         self.data_loader.finalize()
+
+
+
+
