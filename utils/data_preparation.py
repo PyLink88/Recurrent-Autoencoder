@@ -9,14 +9,12 @@ from sklearn.model_selection import train_test_split
 # For reproducibility
 np.random.seed(88)
 
-
 def download_url(url, save_path, chunk_size = 128):
     """ Download data util function"""
     r = requests.get(url, stream=True)
     with open(save_path, 'wb') as fd:
         for chunk in r.iter_content(chunk_size = chunk_size):
             fd.write(chunk)
-
 
 def data_preparation():
     """Download, unzip and partition ECG5000 dataset"""
