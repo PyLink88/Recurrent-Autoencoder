@@ -1,22 +1,22 @@
 {
- /* Experiment info */
+
  "exp_name": "rnn_ae_ECG5000_exp_PROVA", 
  "agent": "RecurrentAEAgent", 
  
- /*  Architecture */
+
  "rnn_type": "GRU",
  "rnn_act": "relu",
  "n_layers": 1, 
  "latent_dim": 32,
  "n_features": 1,
  
- /*  Training info */
+
  "learning_rate": 0.001,
  "batch_size": 128,
  "batch_size_val": 256,
  "max_epoch": 2000, 
  
- /*  Data */
+
  "data_folder": "./data/ECG5000/numpy/",
  "X_train": "X_train.npy",
  "y_train": "y_train.npy", 
@@ -27,16 +27,16 @@
  "X_val_p": "X_val_p.npy",
  "y_val_p": "y_val_p.npy", 
  
- /*  Training and validation type */
+
  "training_type": "one_class",
  "validation_type": "one_class", 
  
- /*  Checkpoint */
+
  "checkpoint_file": "checkpoint.pth.tar",
  "checkpoint_dir": "./experiments/checkpoints/", 
  "load_checkpoint": false, 
  
- /*  GPU */
+
  "cuda": false,
  "device": "cpu",
  "gpu_device": 0,
