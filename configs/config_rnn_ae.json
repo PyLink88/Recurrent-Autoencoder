@@ -1,5 +1,4 @@
 {
-
  "exp_name": "rnn_ae_ECG5000_exp_PROVA", 
  "agent": "RecurrentAEAgent", 
  
