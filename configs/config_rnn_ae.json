@@ -3,7 +3,7 @@
  "agent": "RecurrentAEAgent", 
  
  "rnn_type": "GRU",
- "rnn_act": "relu",
+ "rnn_act": "None",
  "n_layers": 1, 
  "latent_dim": 32,
  "n_features": 1,
