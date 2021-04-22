@@ -1,5 +1,5 @@
 {
- "exp_name": "rnn_ae_ECG5000_exp_PROVA", 
+ "exp_name": "rnn_ae_ECG5000_exp_0", 
  "agent": "RecurrentAEAgent", 
  
  "rnn_type": "GRU",
