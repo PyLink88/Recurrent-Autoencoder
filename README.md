@@ -44,7 +44,7 @@ The project structure is based on the following [Pytorch Project Template](https
 
 In the encoder each vector <img src="https://render.githubusercontent.com/render/math?math=x^{(t)}"> of a time-window <img src="https://render.githubusercontent.com/render/math?math=x"> of length <img src="https://render.githubusercontent.com/render/math?math=L"> is fed into a recurrent unit to perform the following computation: 
 
-<h1 align='center'> <img src="https://latex.codecogs.com/svg.latex?\large&space;h^{(t)}_{E}=f(x^{(t-1)},&space;h^{(t-1)}_{E};&space;\theta_{E})" title="\large h^{(t)}_{E}=f(x^{(t-1)},&space;h^{(t-1)}_{E};&space;\theta_{E})" /> </h1>
+<h1 align='center'> <img src="https://latex.codecogs.com/svg.latex?\large&space;h^{(t)}_{E}=f(x^{(t)},&space;h^{(t-1)}_{E};&space;\theta_{E})" title="\large h^{(t)}_{E}=f(x^{(t-1)},&space;h^{(t-1)}_{E};&space;\theta_{E})" /> </h1>
 
 
 #### Decoder
