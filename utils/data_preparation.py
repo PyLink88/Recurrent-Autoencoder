@@ -19,9 +19,9 @@ def download_url(url, save_path, chunk_size = 128):
 
 def data_preparation():
     """Download, unzip and partition ECG5000 dataset"""
-
-    parser = argparse.ArgumentParser(
-        description="Percentage of normal and anomalous instances to be used as validation set ")
+    
+    # Parsing input argument
+    parser = argparse.ArgumentParser(description = "Percentage of normal and anomalous instances to be used as validation set ")
 
     parser.add_argument("download", type = int, help = "Download data 1, otherwise 0")
     parser.add_argument("perc_tr_n", type = float, help = "Percentage of normal instances for training")
@@ -84,12 +84,10 @@ def data_preparation():
     anomaly = df.loc[df.Class != 1]
 
     # Splitting normal data in training, validation and test set
+    X_train_n, X_val_n = train_test_split(normal, random_state = 88, test_size = 1 - args.perc_tr_n)
+    X_val_n, X_test_n = train_test_split(X_val_n, random_state = 88, test_size = 1- args.perc_val_n)
 
-    X_train_n, X_val_n = train_test_split(normal, random_state = 88, test_size = 1-args.perc_tr_n)
-    X_val_n, X_test_n = train_test_split(X_val_n, random_state = 88, test_size = 1-args.perc_val_n)
-
-    # Splitting anomalous data in validation and test
-    # The size of anomalous data in the validation is chosen so as to be th 0.05% of all validation data
+    # Splitting anomalous data in validation and test set
     perc_anol_all = args.perc_val_an
     n_anol = len(X_train_n) * perc_anol_all / (1 - perc_anol_all)
     perc_anol_val_a = n_anol / len(anomaly)
@@ -115,17 +113,19 @@ def data_preparation():
     X_test = pd.concat([X_test_n.iloc[:, 1:], X_test_a.iloc[:, 1:]]).values
     y_test = pd.concat([X_test_n.iloc[:, 0], X_test_a.iloc[:, 0]]).values
 
-
-    # Saving
+    # Saving training data (only normal instances)
     np.save('./data/ECG5000/numpy/X_train.npy', X_train)
     np.save('./data/ECG5000/numpy/y_train.npy', y_train)
-
+    
+    # Saving validation data (normal + anomalous instances)
     np.save('./data/ECG5000/numpy/X_val.npy', X_val)
     np.save('./data/ECG5000/numpy/y_val.npy', y_val)
-
+    
+    # Saving validation data (only normal instances)
     np.save('./data/ECG5000/numpy/X_val_p.npy', X_val_p)
     np.save('./data/ECG5000/numpy/y_val_p.npy', y_val_p)
-
+    
+    # Saving test data (normal + anomalous instances)
     np.save('./data/ECG5000/numpy/X_test.npy', X_test)
     np.save('./data/ECG5000/numpy/y_test.npy', y_test)
 
