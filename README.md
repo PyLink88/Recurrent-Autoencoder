@@ -58,6 +58,7 @@ In the decoder we reconstruct the time series <img src="https://render.githubuse
 <h3 align='center'><img src="https://latex.codecogs.com/svg.latex?\large&space;\hat{x}^{(t)}&space;=&space;Ah^{(t)}_{D}&plus;b" title="\large \hat{x}^{(t)} = Ah^{(t)}_{D}+b" /> </h3>
 
 ### Data
+The [ECG5000 dataset] (http://www.timeseriesclassification.com/description.php?Dataset=ECG5000) contains 5000 ElectroCardioGram (ECG) univariate time series of length <a href="https://www.codecogs.com/eqnedit.php?latex=L=5000" target="_blank"><img src="https://latex.codecogs.com/svg.latex?L=5000" title="L=5000" /></a>. Each sequence corresponds to an heartbeat. 
 
 ### Requirements
 Check [requirements.txt](https://github.com/PyLink88/Recurrent-Autoencoder/blob/main/requirements.txt).
