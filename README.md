@@ -73,8 +73,7 @@ The [ECG5000 dataset](http://www.timeseriesclassification.com/description.php?Da
 Since the main task here is anomaly detection rather than classification, all istances which do not belong to class N have been merged in unique class which I refer to as Anomalous (AN).
 
 #### Download and data partioning
-You can directly download the ECG5000 dataset from [here](http://www.timeseriesclassification.com/description.php?Dataset=ECG5000) or by running the utils script ```data_preparation.py``` that you can find in the folder ```utils```. This script allows performing data partitioning as well, i.e., splitting your data in training, validation and test set. For more details, run the following:
-- ``` python utils/data_preparation.py -h```
+You can directly download the ECG5000 dataset from [here](http://www.timeseriesclassification.com/description.php?Dataset=ECG5000) or by running the utils script ```data_preparation.py``` that you can find in the folder ```utils```. This script allows performing data partitioning as well, i.e., splitting your data in training, validation and test set. For more details, run the following: ``` python utils/data_preparation.py -h```
 
 
 ### Requirements
