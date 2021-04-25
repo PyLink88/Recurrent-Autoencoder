@@ -35,7 +35,8 @@ The project structure is based on the following [Pytorch Project Template](https
 |  └── metrics.py
 |  └── create_config.py
 |  └── data_preparation.py
-├── Notebooks # Folder where to add your notebook
+├── notebooks # Folder where adding your notebook
+├── experiments # Folder where saving the results of your experiments
 ├── main.py
 
 ```
