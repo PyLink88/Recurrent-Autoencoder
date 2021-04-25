@@ -23,6 +23,7 @@ The project structure is based on the following [Pytorch Project Template](https
 |  └── losses
 |  |  └── MAELoss.py # contains the Mean Absolute Error (MAE) loss
 |  |  └── MSELoss.py # contains the Mean Squared Error (MSE) loss
+|  |  └── AUCLoss.py # under development (DO NOT USE!)
 ├── datasets  # contains all dataloaders for the project
 |  └── ecg5000.py # dataloader for ECG5000 dataset
 ├── data
@@ -32,6 +33,10 @@ The project structure is based on the following [Pytorch Project Template](https
 |  └── checkpoints.py
 |  └── config.py
 |  └── metrics.py
+|  └── create_config.py
+|  └── data_preparation.py
+├── notebooks # Folder where adding your notebook
+├── experiments # Folder where saving the results of your experiments
 ├── main.py
 
 ```
