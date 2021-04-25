@@ -58,6 +58,8 @@ In the decoder we reconstruct the time series <img src="https://render.githubuse
 <h3 align='center'><img src="https://latex.codecogs.com/svg.latex?\large&space;\hat{x}^{(t)}&space;=&space;Ah^{(t)}_{D}&plus;b" title="\large \hat{x}^{(t)} = Ah^{(t)}_{D}+b" /> </h3>
 
 ### Data
+
+#### Description
 The [ECG5000 dataset](http://www.timeseriesclassification.com/description.php?Dataset=ECG5000) contains 5000 ElectroCardioGram (ECG) univariate time series of length <a href="https://www.codecogs.com/eqnedit.php?latex=L=5000" target="_blank"><img src="https://latex.codecogs.com/svg.latex?L=5000" title="L=5000" /></a>. Each sequence corresponds to an heartbeat. Five classes are annotated, corresponding to the following labels: Normal (N), R-on-T Premature Ventricular Contraction (R-on-T PVC), Premature Ventricular Contraction (PVC), Supra-ventricular Premature or Ectopic Beat (SP or EB) and Unclassified Beat (UB). For each class we have the number of training instance reported in the following Table:
 
 | Class | #Instance |
@@ -69,6 +71,10 @@ The [ECG5000 dataset](http://www.timeseriesclassification.com/description.php?Da
 | UB | 24 |
 
 Since the main task here is anomaly detection rather than classification, all istances which do not belong to class N have been merged in unique class which I refer to as Anomalous (AN).
+
+#### Download and data partioning
+You can directly download the ECG5000 dataset from [here](http://www.timeseriesclassification.com/description.php?Dataset=ECG5000) or by running the utils script ```data_preparation.py``` that you can find in the folder ```utils```. This script allows performing data partitioning as well, i.e., splitting your data in training, validation and test set. For more details, run the following:
+- ``` python utils/data_preparation.py -h```
 
 
 ### Requirements
