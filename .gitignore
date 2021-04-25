@@ -14,8 +14,8 @@ data/*
 !data/.keep
 
 # Experiments
-experiments/*
-!experiments/.keep
+experiments/checkpoints/*
+!experiments/checkpoints/.keep
 
 # Personal files
 Usefull_Link.py
