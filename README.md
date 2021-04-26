@@ -85,7 +85,7 @@ You can directly download the ECG5000 dataset from [here](http://www.timeseriesc
 Check [requirements.txt](https://github.com/PyLink88/Recurrent-Autoencoder/blob/main/requirements.txt).
 
 ### Usage
-- Before running the project, you need to add your configuration into the folder ```configs/``` as found [here](https://github.com/PyLink88/Recurrent-Autoencoder/blob/main/configs/config_rnn_ae.json). To this aim, you can just modify the script ```utils/`create_config.py```and then running the following
+- Before running the project, you need to add your configuration into the folder ```configs/``` as found [here](https://github.com/PyLink88/Recurrent-Autoencoder/blob/main/configs/config_rnn_ae.json). To this aim, you can just modify the script ```utils/create_config.py```and then running the following
 ``` python utils/create_config.py```.
 - Finally to run the project: ``` python main.py  configs/config_rnn_ae.json```
 
