@@ -4,7 +4,6 @@ The RNN autoencoder agent class
 
 import torch
 from torch import nn
-from torch.backends import cudnn
 
 import numpy as np
 from tqdm import tqdm
