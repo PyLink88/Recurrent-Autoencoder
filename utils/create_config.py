@@ -51,11 +51,11 @@ config_rnn_ae = {
     "seed": 58
 }
 
-# Writing
 if __name__ == '__main__':
     myJSON = json.dumps(config_rnn_ae)
     with open("./configs/config_rnn_ae.json", "w") as jsonfile:
         jsonfile.write(myJSON)
+        
         print("Config successfully written")
 
 
