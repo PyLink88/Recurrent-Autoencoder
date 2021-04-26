@@ -7,7 +7,6 @@ import torch.nn as nn
 from easydict import EasyDict as edict
 from functools import partial
 
-
 class RecurrentEncoder(nn.Module):
     """Recurrent encoder"""
 
@@ -20,7 +19,6 @@ class RecurrentEncoder(nn.Module):
         _, h_n = self.rec_enc1(x)
 
         return h_n
-
 
 class RecurrentDecoder(nn.Module):
     """Recurrent decoder for RNN and GRU"""
@@ -110,7 +108,6 @@ class RecurrentAE(nn.Module):
     @staticmethod
     def get_rnn_type(rnn_type, rnn_act=None):
         """Get recurrent layer and cell type"""
-
         if rnn_type == 'RNN':
             rnn = partial(nn.RNN, nonlinearity=rnn_act)
             rnn_cell = partial(nn.RNNCell, nonlinearity=rnn_act)
@@ -124,15 +121,11 @@ class RecurrentAE(nn.Module):
     @staticmethod
     def get_decoder(rnn_type):
         """Get recurrent decoder type"""
-
         if rnn_type == 'LSTM':
             decoder = RecurrentDecoderLSTM
-
         else:
             decoder = RecurrentDecoder
-
         return decoder
-
 
 if __name__ == '__main__':
 
