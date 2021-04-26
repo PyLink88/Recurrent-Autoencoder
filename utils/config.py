@@ -5,7 +5,6 @@ def get_config_from_json(json_file):
     """
     Get the config from a json file
     """
-
     # parse the configurations from the config json file provided
     with open(json_file, 'r') as config_file:
         try:
