@@ -4,8 +4,6 @@ from easydict import EasyDict
 def get_config_from_json(json_file):
     """
     Get the config from a json file
-    :param json_file: the path of the config file
-    :return: config(namespace), config(dictionary)
     """
 
     # parse the configurations from the config json file provided
@@ -26,9 +24,6 @@ def process_config(json_file):
     then editing the path of the experiments folder
     creating some important directories in the experiment folder
     Then setup the logging in the whole program
-    Then return the config
-    :param json_file: the path of the config file
-    :return: config object(namespace)
     """
     config, _ = get_config_from_json(json_file)
     
@@ -40,10 +35,10 @@ def process_config(json_file):
     except AttributeError:
         print("ERROR!!..Please provide the exp_name in json file..")
         exit(-1)
-
     return config
 
 def save_config(dict_file, save_path):
+    """Save the configuration"""
 
     myJSON = json.dumps(dict_file)
     with open(save_path + "exp_config.json", "w") as jsonfile:
