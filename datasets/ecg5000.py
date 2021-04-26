@@ -1,13 +1,12 @@
 """
 ECG5000 Dataloader implementation, used in RNN_Autoencoder
 """
-import logging
+
 import numpy as np
+from utils.samplers import StratifiedSampler
 
 import torch
 from torch.utils.data import DataLoader, TensorDataset, Dataset
-from utils.samplers import StratifiedSampler
-
 
 class ECG500DataLoader:
     def __init__(self, config):
