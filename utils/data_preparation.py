@@ -19,17 +19,28 @@ def download_url(url, save_path, chunk_size = 128):
 def data_preparation():
     """Download, unzip and partition ECG5000 dataset"""
     
-    # Parsing input argument
-    parser = argparse.ArgumentParser(description = "Percentage of normal and anomalous instances to be used as validation set ")
+    # Parsing input arguments
+    desc_str = "Data downloading and partitioning"
+    parser = argparse.ArgumentParser(description = desc_str)
 
-    parser.add_argument("download", type = int, help = "Download data 1, otherwise 0")
-    parser.add_argument("perc_tr_n", type = float, help = "Percentage of normal instances for training")
-    parser.add_argument("perc_val_n", type = float, help = "Percentage of normal instances for validation")
-    parser.add_argument("perc_val_an", type = float, help = "Percentage of anomalous instances for validation" +
-                                                            "w.r.t. normal instances in the training set " +
-                                                            "(e.g, if the training set contains 95 normal instances," +
-                                                            " if you set this parameter equal to 0.05, then," +
-                                                            "5 anomalous instances will selected)")
+    # Arguments
+    down_str = "Download data 1, otherwise 0"
+    tr_str = "Percentage of normal instances to be placed in the training set."
+    val_str_n = ("Percentage of normal instances to be placed in the validation set:"
+                 "half of these are used to control model training, "
+                 "the remaining ones for model selection.")
+    val_str_a = ("Percentage of anomalous instances "
+                 "w.r.t. normal instances in the training set"
+                 "used for model selection"
+                 "(e.g, if the training set contains 95 normal instances,"
+                 " if you set this parameter equal to 0.05, then,"
+                 "5 anomalous instances will be selected)."
+                 "The remamining anomalous instances are placed in the test set.")
+
+    parser.add_argument("download", type = int, help = down_str)
+    parser.add_argument("perc_tr_n", type = float, help = tr_str)
+    parser.add_argument("perc_val_n", type = float, help = val_str_n)
+    parser.add_argument("perc_val_an", type = float, help = val_str_a )
     args = parser.parse_args()
 
     # Creating folder
@@ -86,6 +97,11 @@ def data_preparation():
     X_train_n, X_val_n = train_test_split(normal, random_state = 88, test_size = 1 - args.perc_tr_n)
     X_val_n, X_test_n = train_test_split(X_val_n, random_state = 88, test_size = 1- args.perc_val_n)
 
+    # Splitting validation data into two folds: the former to control model training, the latter
+    # for model selection
+    X_val_nA, X_val_nB = train_test_split(X_val_n, random_state=88, test_size = 0.5)
+
+
     # Splitting anomalous data in validation and test set
     perc_anol_all = args.perc_val_an
     n_anol = len(X_train_n) * perc_anol_all / (1 - perc_anol_all)
@@ -100,13 +116,13 @@ def data_preparation():
     X_train = X_train_n.iloc[:, 1:].values
     y_train = X_train_n.iloc[:, 0].values
 
-    # Validation data: both normal and anomalous data
-    X_val = pd.concat([X_val_n.iloc[:, 1:], X_val_a.iloc[:, 1:]]).values
-    y_val = pd.concat([X_val_n.iloc[:, 0], X_val_a.iloc[:, 0]]).values
+    # Validation data to control model training
+    X_val_p = X_val_nA.iloc[:, 1:]
+    y_val_p = X_val_nA.iloc[:, 0]
 
-    # Validation data: only normal data
-    X_val_p = X_val_n.iloc[:, 1:]
-    y_val_p = X_val_n.iloc[:, 0]
+    # Validation data: both normal and anomalous data for model selection
+    X_val = pd.concat([X_val_nB.iloc[:, 1:], X_val_a.iloc[:, 1:]]).values
+    y_val = pd.concat([X_val_nB.iloc[:, 0], X_val_a.iloc[:, 0]]).values
 
     # Test data
     X_test = pd.concat([X_test_n.iloc[:, 1:], X_test_a.iloc[:, 1:]]).values
@@ -115,14 +131,14 @@ def data_preparation():
     # Saving training data (only normal instances)
     np.save('./data/ECG5000/numpy/X_train.npy', X_train)
     np.save('./data/ECG5000/numpy/y_train.npy', y_train)
-    
-    # Saving validation data (normal + anomalous instances)
-    np.save('./data/ECG5000/numpy/X_val.npy', X_val)
-    np.save('./data/ECG5000/numpy/y_val.npy', y_val)
-    
-    # Saving validation data (only normal instances)
+
+    # Saving validation data (only normal instances to control model training)
     np.save('./data/ECG5000/numpy/X_val_p.npy', X_val_p)
     np.save('./data/ECG5000/numpy/y_val_p.npy', y_val_p)
+    
+    # Saving validation data (normal + anomalous instances to perform model selection)
+    np.save('./data/ECG5000/numpy/X_val.npy', X_val)
+    np.save('./data/ECG5000/numpy/y_val.npy', y_val)
     
     # Saving test data (normal + anomalous instances)
     np.save('./data/ECG5000/numpy/X_test.npy', X_test)
@@ -134,3 +150,5 @@ def data_preparation():
 if __name__ == '__main__':
     data_preparation()
     print('Data preparation done!')
+
+
