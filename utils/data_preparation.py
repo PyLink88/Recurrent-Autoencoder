@@ -1,6 +1,5 @@
 import os
 from zipfile import ZipFile
-
 import numpy as np
 import pandas as pd
 import requests
@@ -26,7 +25,7 @@ def data_preparation():
     parser.add_argument("download", type = int, help = "Download data 1, otherwise 0")
     parser.add_argument("perc_tr_n", type = float, help = "Percentage of normal instances for training")
     parser.add_argument("perc_val_n", type = float, help = "Percentage of normal instances for validation")
-    parser.add_argument("perc_val_an", type = float, help = "Percentage of anomalous instances for validation"+
+    parser.add_argument("perc_val_an", type = float, help = "Percentage of anomalous instances for validation" +
                                                             "w.r.t. normal instances in the training set " +
                                                             "(e.g, if the training set contains 95 normal instances," +
                                                             " if you set this parameter equal to 0.05, then," +
@@ -133,6 +132,5 @@ def data_preparation():
 
 
 if __name__ == '__main__':
-
     data_preparation()
     print('Data preparation done!')
