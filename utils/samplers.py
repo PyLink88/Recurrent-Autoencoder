@@ -48,7 +48,8 @@ class StratifiedSampler(Sampler):
 if __name__ == '__main__':
 
     from torch.utils.data import DataLoader, TensorDataset
-
+     
+    # Creating a toy dataset
     y1 = torch.zeros([50,1])
     y2 = torch.ones([12, 1])
     y = torch.cat([y1, y2], axis = 0).squeeze()
@@ -56,9 +57,12 @@ if __name__ == '__main__':
     x[10,:] = 3.14
     x[-21,:] = 392
     
+    # Using StratiFiedSampler
     dataset = TensorDataset(x, y)
     my_sampler = StratifiedSampler(y,10,10)
     loader = DataLoader(dataset, batch_sampler = my_sampler)
+    
+    # Checking results
     for x, y in loader:
         print(x)
 
