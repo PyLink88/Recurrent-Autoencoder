@@ -18,12 +18,9 @@ def AUC_approx(x, x_hat, y, lambda_auc):
         exp = torch.sigmoid(diff).sum()
         auc = lambda_auc * exp / (n_a * n_n)
         loss = err.mean() + auc
-
         return loss
-
     else:
         loss = err.mean()
-
         return loss
 
 class AUCLoss(nn.Module):
@@ -35,11 +32,9 @@ class AUCLoss(nn.Module):
         loss = self.loss(x_hat, x_true, y, lambda_auc)
         return loss
 
-
 if __name__ == '__main__':
 
-    #     # Lambda_reg in {0,0.1,1,10,100,1000,10000} con MSE error
-
+    # lambda_auc in {0,0.1,1,10,100,1000,10000} with MSE error
     x = torch.rand([10,2,3])
     x_hat =  torch.rand([10,2,3]) +.2
     y = torch.tensor([0,0,0,0,0,0,1,1,1,1])
