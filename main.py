@@ -7,7 +7,6 @@ Main
 -Run the agent
 """
 
-
 import argparse
 from utils.config import *
 from agents import *
@@ -25,5 +24,3 @@ def main():
     
 if __name__ == '__main__':
     main()
-
-# python RNN_Autoencoder/main.py RNN_Autoencoder/configs/config_rnn_ae.json
