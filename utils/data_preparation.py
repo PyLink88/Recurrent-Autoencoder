@@ -100,7 +100,6 @@ def data_preparation():
     # for model selection
     X_val_nA, X_val_nB = train_test_split(X_val_n, random_state=88, test_size = 0.5)
 
-
     # Splitting anomalous data in validation and test set
     perc_anol_all = args.perc_val_an
     n_anol = len(X_train_n) * perc_anol_all / (1 - perc_anol_all)
@@ -110,7 +109,7 @@ def data_preparation():
                                          random_state = 88,
                                          test_size = perc_anol_test_a,
                                          stratify = anomaly.Class)
-
+    
     # Training data
     X_train = X_train_n.iloc[:, 1:].values
     y_train = X_train_n.iloc[:, 0].values
@@ -144,7 +143,6 @@ def data_preparation():
     np.save('./data/ECG5000/numpy/y_test.npy', y_test)
 
     print('Saved data in numpy')
-
 
 if __name__ == '__main__':
     data_preparation()
