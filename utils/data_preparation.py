@@ -36,7 +36,6 @@ def data_preparation():
                  " if you set this parameter equal to 0.05, then,"
                  "5 anomalous instances will be selected)."
                  "The remamining anomalous instances are placed in the test set.")
-
     parser.add_argument("download", type = int, help = down_str)
     parser.add_argument("perc_tr_n", type = float, help = tr_str)
     parser.add_argument("perc_val_n", type = float, help = val_str_n)
