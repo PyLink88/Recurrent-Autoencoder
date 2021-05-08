@@ -32,7 +32,7 @@ class RecurrentAEAgent(BaseAgent):
         self.data_loader = ECG500DataLoader(self.config) # CHANGE
 
          # Create instance from the loss
-        self.loss = MAELoss()
+        self.loss = {'MSE': MSELoss(),'MAE': MAELoss(),'AUC': AUCLoss()}[self.config.loss]
 
         # Create instance from the optimizer
         self.optimizer = torch.optim.Adam(self.model.parameters(), lr = self.config.learning_rate)
