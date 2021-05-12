@@ -24,6 +24,9 @@ config_rnn_ae = {
     "batch_size_val": 256,
     "max_epoch": 2000,
 
+    # Loss function
+    'loss': 'MAE',
+
     # Folder where to retrieve the data and their names
     "data_folder": "./data/ECG5000/numpy/",
     "X_train": "X_train.npy",
@@ -50,6 +53,8 @@ config_rnn_ae = {
     "gpu_device": 0,
     "seed": 58
 }
+
+
 
 if __name__ == '__main__':
     myJSON = json.dumps(config_rnn_ae)
