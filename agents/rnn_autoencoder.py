@@ -16,7 +16,8 @@ from utils.checkpoints import checkpoints_folder
 from utils.config import save_config
 from datasets.ecg5000 import ECG500DataLoader 
 from graphs.models.recurrent_autoencoder import RecurrentAE
-from graphs.losses.AUCLoss import AUCLoss
+from graphs.losses.MAEAUCLoss import MAEAUCLoss
+from graphs.losses.MSEAUCLoss import MSEAUCLoss
 from graphs.losses.MAELoss import MAELoss
 from graphs.losses.MSELoss import MSELoss
 
@@ -32,7 +33,10 @@ class RecurrentAEAgent(BaseAgent):
         self.data_loader = ECG500DataLoader(self.config) # CHANGE
 
          # Create instance from the loss
-        self.loss = {'MSE': MSELoss(),'MAE': MAELoss(),'AUC': AUCLoss()}[self.config.loss]
+        self.loss = {'MSE': MSELoss(),
+                     'MAE': MAELoss(),
+                     'MSEAUC': MSEAUCLoss(),
+                     'MAEAUC': MAEAUCLoss()}[self.config.loss]
 
         # Create instance from the optimizer
         self.optimizer = torch.optim.Adam(self.model.parameters(), lr = self.config.learning_rate)

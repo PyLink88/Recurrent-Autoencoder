@@ -14,19 +14,17 @@ class ECG500DataLoader:
 
         # Loading training data
         if self.config.training_type == 'one_class':
+            # If loss without AUC penalty is used
             X_train = np.load(self.config.data_folder + self.config.X_train).astype(np.float32)
             y_train = np.load(self.config.data_folder + self.config.y_train).astype(np.float32)
         else:
+            # If loss with AUC penalty is used
             X_train = np.load(self.config.data_folder + self.config.X_train_p).astype(np.float32)
             y_train = np.load(self.config.data_folder + self.config.y_train_p).astype(np.float32)
         
-        # Loading validation data
-        if self.config.validation_type == 'one_class':
-            X_val = np.load(self.config.data_folder + self.config.X_val_p).astype(np.float32)
-            y_val = np.load(self.config.data_folder + self.config.y_val_p).astype(np.float32)
-        else:
-            X_val = np.load(self.config.data_folder + self.config.X_val).astype(np.float32)
-            y_val = np.load(self.config.data_folder + self.config.y_val).astype(np.float32)
+        # Loading validation data to control model training
+        X_val = np.load(self.config.data_folder + self.config.X_val).astype(np.float32)
+        y_val = np.load(self.config.data_folder + self.config.y_val).astype(np.float32)
 
         # From numpy to torch
         if X_train.ndim < 3:
@@ -45,9 +43,10 @@ class ECG500DataLoader:
 
         # Dataloader
         if self.config.training_type == 'one_class':
-            self.train_loader = DataLoader(training, batch_size = self.config.batch_size, shuffle = True)
 
+            self.train_loader = DataLoader(training, batch_size = self.config.batch_size, shuffle = True)
         else:
+
             sampler = StratifiedSampler(y_train,
                                         batch_size =self.config.batch_size,
                                         random_state =self.config.sampler_random_state)
