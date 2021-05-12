@@ -44,3 +44,4 @@ def save_config(dict_file, save_path):
         jsonfile.write(myJSON)
     print('Saved configuration in ' + save_path )
    
+
