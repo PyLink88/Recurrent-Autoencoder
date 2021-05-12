@@ -5,6 +5,7 @@ Main
 -Process the json config passed
 -Create an agent instance
 -Run the agent
+-Finalize
 """
 
 import argparse
