@@ -138,7 +138,7 @@ if __name__ == '__main__':
     config['device'] = 'cpu'
     config = edict(config)
 
-    # Random data
+    # Adding random data
     X = torch.tensor([[1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
                       [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
                       [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]], dtype=torch.float32).unsqueeze(2)
@@ -154,3 +154,5 @@ if __name__ == '__main__':
     # Loss
     loss = nn.L1Loss(reduction = 'mean')
     l = loss(X, out)
+
+
