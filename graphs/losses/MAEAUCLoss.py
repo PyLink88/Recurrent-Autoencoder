@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 
-def AUC_approx(x, x_hat, y, lambda_auc):
+def MAEAUC_approx(x, x_hat, y, lambda_auc):
 
     # Computing error for each row
     err = torch.abs(x - x_hat).mean(axis = (1, 2))
@@ -17,16 +17,17 @@ def AUC_approx(x, x_hat, y, lambda_auc):
         diff = err_a.view(-1, 1).unsqueeze(1) - err_n.view(-1, 1)
         exp = torch.sigmoid(diff).sum()
         auc = lambda_auc * exp / (n_a * n_n)
-        loss = err.mean() + auc
-        return loss
+        mean_loss = err.mean()
+        penalized_loss = err.mean() - auc
+        return penalized_loss, mean_loss
     else:
-        loss = err.mean()
-        return loss
+        mean_loss = err.mean()
+        return mean_loss
 
-class AUCLoss(nn.Module):
+class MAEAUCLoss(nn.Module):
     def __init__(self):
         super().__init__()
-        self.loss = AUC_approx
+        self.loss = MAEAUC_approx
 
     def forward(self, x_hat, x_true, y, lambda_auc):
         loss = self.loss(x_hat, x_true, y, lambda_auc)
@@ -39,9 +40,9 @@ if __name__ == '__main__':
     x_hat =  torch.rand([10,2,3]) +.2
     y = torch.tensor([0,0,0,0,0,0,1,1,1,1])
 
-    loss = AUCLossNN()
+    loss = MAEAUCLoss()
     print(loss(x, x_hat, y, 10))
-    print(AUCLoss(x, x_hat, y, 10))
+    print(MAEAUC_approx(x, x_hat, y, 10))
 
 
 

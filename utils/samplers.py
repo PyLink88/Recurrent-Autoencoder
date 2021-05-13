@@ -34,15 +34,16 @@ class StratifiedSampler(Sampler):
         self.rnd_state = random_state
         self.n_batches = int(len(y) / batch_size)
 
+
     def __iter__(self):
         skf = StratifiedKFold(n_splits = self.n_batches,
-                              shuffle=self.shuffle,
+                              shuffle = self.shuffle,
                               random_state = self.rnd_state)
         for train_idx, test_idx in skf.split(self.X, self.y):
             yield test_idx
 
     def __len__(self):
-        return len(self.y)
+        return self.n_batches
 
 
 if __name__ == '__main__':
