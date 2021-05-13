@@ -85,8 +85,8 @@ class RecurrentAEAgent(BaseAgent):
             # Training epoch
             if self.config.training_type == "one_class":
                 perf_train = self.train_one_epoch()
-                self.train_loss = np.append(self.train_loss, perf_train.avg)
-                print('Training loss at epoch ' + str(self.current_epoch) + ' is ' + str(perf_train.avg))
+                self.train_loss = np.append(self.train_loss, perf_train[0].avg)
+                print('Training loss at epoch ' + str(self.current_epoch) + ' is ' + str(perf_train[0].avg))
             else:
                 perf_train, perf_train_parz = self.train_one_epoch()
                 self.train_loss = np.append(self.train_loss, perf_train.avg)

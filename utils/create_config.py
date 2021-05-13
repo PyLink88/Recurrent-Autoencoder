@@ -15,7 +15,7 @@ config_rnn_ae = {
     "rnn_type": "GRU",
     "rnn_act": "None",
     "n_layers": 1,
-    "latent_dim": 72,
+    "latent_dim": 8,
     "n_features": 1,
 
     # Optimization hyperparameters
@@ -25,7 +25,7 @@ config_rnn_ae = {
     "max_epoch": 2000,
 
     # Loss function
-    'loss': 'MAEAUC',
+    'loss': 'MAE',
 
     # AUC hyperparameters
     'lambda_auc': 0.1,
@@ -45,7 +45,7 @@ config_rnn_ae = {
     "y_val_p": "y_val_p.npy",
 
     # Training type: by now set equal to "one_class"
-    "training_type": "more_class",
+    "training_type": "one_class",
     "validation_type": "one_class",
 
     # Checkpoints
@@ -59,8 +59,6 @@ config_rnn_ae = {
     "gpu_device": 0,
     "seed": 58
 }
-
-
 
 if __name__ == '__main__':
     myJSON = json.dumps(config_rnn_ae)
