@@ -51,6 +51,7 @@ class RecurrentAEAgent(BaseAgent):
         self.current_epoch = 0
         self.best_valid = 10e+16 # Setting a very large values
         self.train_loss = np.array([], dtype = np.float64)
+        self.train_loss_parz = np.array([], dtype=np.float64)
         self.valid_loss = np.array([], dtype = np.float64)
 
         # Check is cuda is available or not
@@ -78,17 +79,26 @@ class RecurrentAEAgent(BaseAgent):
     def train(self):
 
         for epoch in range(self.current_epoch, self.config.max_epoch):
+
             self.current_epoch = epoch
-            perf_train = self.train_one_epoch()
+
+            # Training epoch
+            if self.config.training_type == "one_class":
+                perf_train = self.train_one_epoch()
+                self.train_loss = np.append(self.train_loss, perf_train.avg)
+                print('Training loss at epoch ' + str(self.current_epoch) + ' is ' + str(perf_train.avg))
+            else:
+                perf_train, perf_train_parz = self.train_one_epoch()
+                self.train_loss = np.append(self.train_loss, perf_train.avg)
+                self.train_loss_parz = np.append(self.train_loss_parz, perf_train_parz.avg)
+                print('Training loss at epoch ' + str(self.current_epoch) + ' is ' + str(perf_train.avg))
+                print('Training loss parz at epoch ' + str(self.current_epoch) + ' is ' + str(perf_train_parz.avg))
+
+            # Validation
             perf_valid = self.validate_one_epoch()
-
-            # Updating training and validation loss
-            self.train_loss = np.append(self.train_loss, perf_train.avg)
             self.valid_loss = np.append(self.valid_loss, perf_valid.avg)
+            print('Validation loss at epoch ' + str(self.current_epoch) + ' is ' + str(perf_valid.avg))
 
-            # Printing current training and validation loss
-            print('Training loss at epoch '+ str(self.current_epoch) + ' is ' + str( perf_train.avg))
-            print('Validation loss at epoch '+ str(self.current_epoch) + ' is ' + str( perf_valid.avg))
             
             # Saving
             is_best = perf_valid.sum < self.best_valid
@@ -108,6 +118,7 @@ class RecurrentAEAgent(BaseAgent):
 
         # Initialize your average meters
         epoch_loss = AverageMeter()
+        epoch_loss_parz = AverageMeter()
 
         # One epoch of training
         for x, y in tqdm_batch: 
@@ -118,7 +129,10 @@ class RecurrentAEAgent(BaseAgent):
             x_hat = self.model(x)
 
             # Current training loss
-            cur_tr_loss = self.loss(x, x_hat)
+            if self.config.training_type == "one_class":
+                cur_tr_loss = self.loss(x, x_hat)
+            else:
+                cur_tr_loss, cur_tr_parz_loss = self.loss(x, x_hat, y, self.config.lambda_auc)
            
             if np.isnan(float(cur_tr_loss.item())):
                 raise ValueError('Loss is nan during training...')
@@ -129,11 +143,15 @@ class RecurrentAEAgent(BaseAgent):
             self.optimizer.step()
 
             # Updating loss
-            epoch_loss.update(cur_tr_loss.item())
+            if self.config.training_type == "one_class":
+                epoch_loss.update(cur_tr_loss.item())
+            else:
+                epoch_loss.update(cur_tr_loss.item())
+                epoch_loss_parz.update(cur_tr_parz_loss.item())
 
         tqdm_batch.close()
       
-        return epoch_loss
+        return epoch_loss, epoch_loss_parz
 
     def validate_one_epoch(self):
         """ One epoch validation step """
@@ -179,7 +197,8 @@ class RecurrentAEAgent(BaseAgent):
             'state_dict': self.model.state_dict(),
             'optimizer': self.optimizer.state_dict(),
             'valid_loss': self.valid_loss,
-            'train_loss': self.train_loss
+            'train_loss': self.train_loss,
+            'train_loss_parz': self.train_loss_parz
         }
 
         # Save the state
@@ -202,6 +221,7 @@ class RecurrentAEAgent(BaseAgent):
                 self.optimizer.load_state_dict(checkpoint['optimizer'])
                 self.valid_loss = checkpoint['valid_loss']
                 self.train_loss = checkpoint['train_loss']
+                self.train_loss_parz = checkpoint['train_loss_parz']
 
                 print("Checkpoint loaded successfully from '{}' at (epoch {}) \n"
                                 .format(self.checkpoints_path , checkpoint['epoch']))
