@@ -4,6 +4,7 @@ import numpy as np
 import pandas as pd
 import requests
 from sklearn.model_selection import train_test_split
+from sklearn.model_selection import StratifiedShuffleSplit
 import argparse
 
 # For reproducibility
@@ -79,8 +80,8 @@ def data_preparation():
         print('Create ECG5000/numpy folder')
 
     # Loading data
-    train = pd.read_table('./data/ECG5000/ECG5000_TRAIN.txt', sep=r'\s{2,}', engine='python', header=None)
-    test = pd.read_table('./data/ECG5000/ECG5000_TEST.txt', sep=r'\s{2,}', engine='python', header=None)
+    train = pd.read_table('C:/Users/eid0108486/Desktop/Pytorch/my_projects/RecAE/data/ECG5000/ECG5000_TRAIN.txt', sep=r'\s{2,}', engine='python', header=None)
+    test = pd.read_table('C:/Users/eid0108486/Desktop/Pytorch/my_projects/RecAE/data/ECG5000/ECG5000_TEST.txt', sep=r'\s{2,}', engine='python', header=None)
 
     # Concatenating
     df = pd.concat([train, test])
@@ -98,6 +99,7 @@ def data_preparation():
 
     # Splitting validation data into two folds: the former to control model training, the latter
     # for model selection
+
     X_val_nA, X_val_nB = train_test_split(X_val_n, random_state=88, test_size = 0.5)
 
     # Splitting anomalous data in validation and test set
@@ -109,18 +111,31 @@ def data_preparation():
                                          random_state = 88,
                                          test_size = perc_anol_test_a,
                                          stratify = anomaly.Class)
-    
-    # Training data
+
+    # Splitting anomalous validation data into two splitting: the former for model training the latter
+    # for model selection
+    X_val_aA, X_val_aB = train_test_split(X_val_a, random_state = 88, test_size = 0.5)
+
+
+    # Training data ONLY NORMAL
     X_train = X_train_n.iloc[:, 1:].values
     y_train = X_train_n.iloc[:, 0].values
 
-    # Validation data to control model training
-    X_val_p = X_val_nA.iloc[:, 1:]
-    y_val_p = X_val_nA.iloc[:, 0]
+    # Training data NORMAL + ANOL
+    X_train_p = pd.concat([X_train_n.iloc[:, 1:], X_val_aA.iloc[:, 1:]]).values
+    y_train_p = pd.concat([X_train_n.iloc[:, 0], X_val_aA.iloc[:, 0]]).values
 
-    # Validation data: both normal and anomalous data for model selection
-    X_val = pd.concat([X_val_nB.iloc[:, 1:], X_val_a.iloc[:, 1:]]).values
-    y_val = pd.concat([X_val_nB.iloc[:, 0], X_val_a.iloc[:, 0]]).values
+    # Validation data only normal to control model training
+    X_val = X_val_n.iloc[:, 1:].values
+    y_val = X_val_n.iloc[:, 0].values
+
+    # Validation data: both normal and anomalous data for model selection: AUC LOSS
+    X_val_p = pd.concat([X_val_nB.iloc[:, 1:], X_val_aB.iloc[:, 1:]]).values
+    y_val_p = pd.concat([X_val_nB.iloc[:, 0], X_val_aB.iloc[:, 0]]).values
+
+    # Validation data: both normal and anomalous data for model selection: NO AUC LOSS
+    X_val_p_full = pd.concat([X_val_nB.iloc[:, 1:], X_val_a.iloc[:, 1:]]).values
+    y_val_p_full = pd.concat([X_val_nB.iloc[:, 0], X_val_a.iloc[:, 0]]).values
 
     # Test data
     X_test = pd.concat([X_test_n.iloc[:, 1:], X_test_a.iloc[:, 1:]]).values
@@ -130,13 +145,21 @@ def data_preparation():
     np.save('./data/ECG5000/numpy/X_train.npy', X_train)
     np.save('./data/ECG5000/numpy/y_train.npy', y_train)
 
+    # Saving training data (normal instances + anomalous)
+    np.save('./data/ECG5000/numpy/X_train_p.npy', X_train_p)
+    np.save('./data/ECG5000/numpy/y_train_p.npy', y_train_p)
+
     # Saving validation data (only normal instances to control model training)
-    np.save('./data/ECG5000/numpy/X_val_p.npy', X_val_p)
-    np.save('./data/ECG5000/numpy/y_val_p.npy', y_val_p)
-    
-    # Saving validation data (normal + anomalous instances to perform model selection)
     np.save('./data/ECG5000/numpy/X_val.npy', X_val)
     np.save('./data/ECG5000/numpy/y_val.npy', y_val)
+    
+    # Saving validation data (normal + anomalous instances to perform model selection yes AUC)
+    np.save('./data/ECG5000/numpy/X_val_p.npy', X_val_p)
+    np.save('./data/ECG5000/numpy/y_val_p.npy', y_val_p)
+
+    # Saving validation data (normal + anomalous instances to perform model selection no AUC)
+    np.save('./data/ECG5000/numpy/X_val_p_full.npy', X_val_p_full)
+    np.save('./data/ECG5000/numpy/y_val_p_full.npy', y_val_p_full)
     
     # Saving test data (normal + anomalous instances)
     np.save('./data/ECG5000/numpy/X_test.npy', X_test)
@@ -147,5 +170,7 @@ def data_preparation():
 if __name__ == '__main__':
     data_preparation()
     print('Data preparation done!')
+
+
 
 

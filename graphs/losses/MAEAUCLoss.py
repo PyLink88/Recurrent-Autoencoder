@@ -18,7 +18,7 @@ def MAEAUC_approx(x, x_hat, y, lambda_auc):
         exp = torch.sigmoid(diff).sum()
         auc = lambda_auc * exp / (n_a * n_n)
         mean_loss = err.mean()
-        penalized_loss = err.mean() + auc
+        penalized_loss = err.mean() - auc
         return penalized_loss, mean_loss
     else:
         mean_loss = err.mean()

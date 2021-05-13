@@ -15,7 +15,7 @@ config_rnn_ae = {
     "rnn_type": "GRU",
     "rnn_act": "None",
     "n_layers": 1,
-    "latent_dim": 32,
+    "latent_dim": 72,
     "n_features": 1,
 
     # Optimization hyperparameters
@@ -25,13 +25,18 @@ config_rnn_ae = {
     "max_epoch": 2000,
 
     # Loss function
-    'loss': 'MAEAUCLoss',
+    'loss': 'MAEAUC',
+
+    # AUC hyperparameters
     'lambda_auc': 0.1,
+    'sampler_random_state': 88,
 
     # Folder where to retrieve the data and their names
     "data_folder": "./data/ECG5000/numpy/",
     "X_train": "X_train.npy",
     "y_train": "y_train.npy",
+    "X_train_p": "X_train_p.npy",
+    "y_train_p": "y_train_p.npy",
     "X_val": "X_val.npy",
     "y_val": "y_val.npy",
     "X_test": "X_test.npy",

@@ -12,6 +12,10 @@ import argparse
 from utils.config import *
 from agents import *
 
+import warnings
+warnings.filterwarnings("ignore")
+
+
 def main():
     arg_parser = argparse.ArgumentParser(description = 'Configuration path')
     arg_parser.add_argument('config', help = 'The Configuration file in json format')

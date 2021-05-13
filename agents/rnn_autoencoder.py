@@ -175,7 +175,11 @@ class RecurrentAEAgent(BaseAgent):
                 x_hat = self.model(x)
                 
                 # Current training loss
-                cur_val_loss = self.loss(x, x_hat)
+                if self.config.training_type == "one_class":
+                    cur_val_loss = self.loss(x, x_hat)
+                else:
+                    cur_val_loss = self.loss(x, x_hat, y, self.config.lambda_auc)
+
                 if np.isnan(float(cur_val_loss.item())):
                     raise ValueError('Loss is nan during validation...')
 
