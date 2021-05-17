@@ -83,14 +83,14 @@ class RecurrentDecoderLSTM(nn.Module):
 class RecurrentAE(nn.Module):
     """Recurrent autoencoder"""
 
-    def __init__(self, config):
+    def __init__(self, latent_dim, config):
         super().__init__()
 
         # Encoder and decoder configuration
         self.config = config
         self.rnn, self.rnn_cell = self.get_rnn_type(self.config.rnn_type, self.config.rnn_act)
         self.decoder = self.get_decoder(self.config.rnn_type)
-        self.latent_dim = self.config.latent_dim
+        self.latent_dim = latent_dim
         self.n_features = self.config.n_features
         self.device = self.config.device
 

@@ -9,7 +9,6 @@ import torch
 from torch.utils.data import DataLoader, TensorDataset, Dataset
 
 
-
 class ECG500DataLoader:
     def __init__(self, config):
         self.config = config
@@ -23,7 +22,7 @@ class ECG500DataLoader:
             # If loss with AUC penalty is used
             X_train = np.load(self.config.data_folder + self.config.X_train_p).astype(np.float32)
             y_train = np.load(self.config.data_folder + self.config.y_train_p).astype(np.float32)
-        
+
         # Loading validation data to control model training
         X_val = np.load(self.config.data_folder + self.config.X_val).astype(np.float32)
         y_val = np.load(self.config.data_folder + self.config.y_val).astype(np.float32)
@@ -46,15 +45,15 @@ class ECG500DataLoader:
         # Dataloader
         if self.config.training_type == 'one_class':
 
-            self.train_loader = DataLoader(training, batch_size = self.config.batch_size, shuffle = True)
+            self.train_loader = DataLoader(training, batch_size=self.config.batch_size, shuffle=True)
         else:
 
             sampler = StratifiedSampler(y_train,
-                                        batch_size =self.config.batch_size,
-                                        random_state =self.config.sampler_random_state)
-            self.train_loader = DataLoader(training, batch_sampler = sampler)
+                                        batch_size=self.config.batch_size,
+                                        random_state=self.config.sampler_random_state)
+            self.train_loader = DataLoader(training, batch_sampler=sampler)
 
-        self.valid_loader = DataLoader(validation, batch_size = self.config.batch_size_val, shuffle = False)
+        self.valid_loader = DataLoader(validation, batch_size=self.config.batch_size_val, shuffle=False)
 
         # Number of batches
         self.train_iterations = len(self.train_loader)
