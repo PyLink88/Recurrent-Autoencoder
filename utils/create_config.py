@@ -8,7 +8,7 @@ import json
 config_rnn_ae = {
 
     # Experiment information
-    "exp_name": "rnn_ae_ECG5000_exp_0",
+    "exp_name": "rnn_ae_ECG5000_exp_0_b",
     "agent": "RecurrentAEAgent",
 
     # Architecture hyperparameters
@@ -54,10 +54,13 @@ config_rnn_ae = {
     "load_checkpoint": False,
 
     # GPU settings
-    "cuda": False,
-    "device": "cpu",
+    "cuda": True,
+    "device": "cuda",
     "gpu_device": 0,
-    "seed": 58
+    "seed": 58,
+
+    # Use tune
+    "tune": False
 }
 
 if __name__ == '__main__':
@@ -66,5 +69,3 @@ if __name__ == '__main__':
         jsonfile.write(myJSON)
         
         print("Config successfully written")
-
-
