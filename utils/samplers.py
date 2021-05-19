@@ -66,7 +66,3 @@ if __name__ == '__main__':
     # Checking results
     for x, y in loader:
         print(x)
-
-
-
-
