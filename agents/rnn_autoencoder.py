@@ -14,7 +14,7 @@ from agents.base import BaseAgent
 from utils.metrics import AverageMeter
 from utils.checkpoints import checkpoints_folder
 from utils.config import save_config
-from datasets.ecg5000 import ECG500DataLoader 
+from datasets.common_loader import RecAEDataLoader 
 from graphs.models.recurrent_autoencoder import RecurrentAE
 from graphs.losses.MAEAUCLoss import MAEAUCLoss
 from graphs.losses.MSEAUCLoss import MSEAUCLoss
@@ -24,14 +24,11 @@ from graphs.losses.MSELoss import MSELoss
 import ray
 from ray import tune
 
-
 class RecurrentAEAgent(BaseAgent):
 
     def __init__(self, config):
         super().__init__(config)
 
-        # Create an instance from the data loader
-        self.data_loader = ECG500DataLoader(self.config) # CHANGE
 
         # Create an instance from the Model
         if self.config.tune:
@@ -40,7 +37,10 @@ class RecurrentAEAgent(BaseAgent):
                                   'MSEAUC': MSEAUCLoss(),
                                   'MAEAUC': MAEAUCLoss()}
         else:
-            # Create an instance from the kodel
+            # Create an instance from the data loader
+            self.data_loader = RecAEDataLoader(self.config.batch_size, self.config)
+
+            # Create an instance from the model
             self.model = RecurrentAE(self.config.latent_dim, self.config)
 
             # Create instance from the loss
@@ -331,7 +331,3 @@ class RecurrentAEAgent(BaseAgent):
         """
         self.save_checkpoint()
         self.data_loader.finalize()
-
-
-
-
