@@ -154,5 +154,3 @@ if __name__ == '__main__':
     # Loss
     loss = nn.L1Loss(reduction = 'mean')
     l = loss(X, out)
-
-
