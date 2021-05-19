@@ -80,8 +80,8 @@ def data_preparation():
         print('Create ECG5000/numpy folder')
 
     # Loading data
-    train = pd.read_table('C:/Users/eid0108486/Desktop/Pytorch/my_projects/RecAE/data/ECG5000/ECG5000_TRAIN.txt', sep=r'\s{2,}', engine='python', header=None)
-    test = pd.read_table('C:/Users/eid0108486/Desktop/Pytorch/my_projects/RecAE/data/ECG5000/ECG5000_TEST.txt', sep=r'\s{2,}', engine='python', header=None)
+    train = pd.read_table('./data/ECG5000/ECG5000_TRAIN.txt', sep=r'\s{2,}', engine='python', header=None)
+    test = pd.read_table('./data/ECG5000/ECG5000_TEST.txt', sep=r'\s{2,}', engine='python', header=None)
 
     # Concatenating
     df = pd.concat([train, test])
@@ -170,7 +170,4 @@ def data_preparation():
 if __name__ == '__main__':
     data_preparation()
     print('Data preparation done!')
-
-
-
 
