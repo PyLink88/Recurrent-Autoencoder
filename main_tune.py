@@ -117,20 +117,23 @@ if __name__ == "__main__":
    
     # Project name
     project_name ='ECG_5000' # Give a name like the dataset
-
+    
+    # Hyperparameters grid
+    param_config = { 
+                    "latent_dim": tune.grid_search([35, 70, 105]),
+                    "lr": tune.grid_search([0.001, 0.01]),
+                    "batch_size": tune.grid_search([256]),
+                    "loss_type": tune.grid_search(['MAE','MAEAUC'])
+    }
+    
+    # Resources
+    resources = {"cpu": 2, "gpu": 1}
+    
     # Fine tuning
     analysis = tune.run(partial(tune_model, config_rnn_ae = config_rnn_ae), 
-                        config = {"latent_dim": tune.grid_search([35, 70, 105]),
-                                  "lr": tune.grid_search([0.001, 0.01]),
-                                  "batch_size": tune.grid_search([256]),
-                                  "loss_type": tune.grid_search(['MAE','MAEAUC'])}, 
-                        resources_per_trial = {"cpu": 2, "gpu": 1}, 
+                        config = param_config, 
+                        resources_per_trial = resources, 
                         name = project_name, 
                         local_dir = my_dir)# ,resume = True)
-
-# Se si blocca esperimento basta occorre salvare
-# tutte le configurazioni, restore_path, name, resources_per_trial e mettere resume = True
-                    
-
-
-
+    
+    
