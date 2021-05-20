@@ -49,7 +49,6 @@ class RecurrentDecoder(nn.Module):
 
         return x.view(-1, seq_len, self.n_features)
 
-
 class RecurrentDecoderLSTM(nn.Module):
     """Recurrent decoder LSTM"""
 
@@ -78,7 +77,6 @@ class RecurrentDecoderLSTM(nn.Module):
             x = torch.cat([x, x_i], axis = 1)
 
         return x.view(-1, seq_len, self.n_features)
-
 
 class RecurrentAE(nn.Module):
     """Recurrent autoencoder"""
@@ -144,7 +142,7 @@ if __name__ == '__main__':
                       [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]], dtype=torch.float32).unsqueeze(2)
 
     # Model
-    model = RecurrentAE(config)
+    model = RecurrentAE(config['latent_dim'], config)
 
     # Encoder
     h = model.encoder(X)
