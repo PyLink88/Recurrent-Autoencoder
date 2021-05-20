@@ -41,6 +41,13 @@ class BaseAgent:
         :return:
         """
         raise NotImplementedError
+        
+    def train_tune(self):
+        """
+        Main training loop when using ray-tune
+        :return:
+        """
+        raise NotImplementedError
 
     def train_one_epoch(self):
         """
@@ -48,7 +55,14 @@ class BaseAgent:
         :return:
         """
         raise NotImplementedError
-
+        
+    def train_one_epoch_tune(self):
+        """
+        One epoch of training when using ray-tune
+        :return:
+        """
+        raise NotImplementedError
+        
     def validate_one_epoch(self):
         """
         One cycle of model validation
