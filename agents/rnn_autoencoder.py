@@ -29,7 +29,6 @@ class RecurrentAEAgent(BaseAgent):
     def __init__(self, config):
         super().__init__(config)
 
-
         # Create an instance from the Model
         if self.config.tune:
             self.possible_loss = {'MSE': MSELoss(),
@@ -87,8 +86,8 @@ class RecurrentAEAgent(BaseAgent):
 
             # Loading chekpoint
             self.load_checkpoint(self.config.checkpoint_file)
-
-
+            
+            
     def train_tune(self, checkpoint_dir = None):
 
         for epoch in range(self.current_epoch, self.config.max_epoch):
@@ -99,19 +98,15 @@ class RecurrentAEAgent(BaseAgent):
             if self.config.training_type == "one_class":
                 perf_train = self.train_one_epoch()
                 self.train_loss = np.append(self.train_loss, perf_train[0].avg)
-                #print('Training loss at epoch ' + str(self.current_epoch) + ' is ' + str(perf_train[0].avg))
             else:
                 perf_train, perf_train_parz = self.train_one_epoch()
                 self.train_loss = np.append(self.train_loss, perf_train.avg)
                 self.train_loss_parz = np.append(self.train_loss_parz, perf_train_parz.avg)
-                #print('Training loss at epoch ' + str(self.current_epoch) + ' is ' + str(perf_train.avg))
-                #print('Training loss parz at epoch ' + str(self.current_epoch) + ' is ' + str(perf_train_parz.avg))
 
             # Validation
             perf_valid = self.validate_one_epoch()
             self.valid_loss = np.append(self.valid_loss, perf_valid.avg)
-            #print('Validation loss at epoch ' + str(self.current_epoch) + ' is ' + str(perf_valid.avg))
-
+       
             # Checking for a better model
             is_best = perf_valid.sum < self.best_valid
             self.is_best = is_best
@@ -119,24 +114,7 @@ class RecurrentAEAgent(BaseAgent):
                 self.best_valid = perf_valid.sum
 
             self.save_checkpoint_tune(checkpoint_dir)
-            # # Saving with tune
-            # with tune.checkpoint_dir(step = 'iter') as checkpoint_dir:
-            #     path = os.path.join(checkpoint_dir, "checkpoint")
-            #     state = {'epoch': self.current_epoch,
-            #             'state_dict': self.model.state_dict(),
-            #             'optimizer': self.optimizer.state_dict(),
-            #             'valid_loss': self.valid_loss,
-            #             'train_loss': self.train_loss,
-            #             'train_loss_parz': self.train_loss_parz}
-            #     torch.save(state, path)
 
-            #     # Saving better model if any
-            #     if is_best:
-            #         best_path  = os.path.join(checkpoint_dir, 'model_best.pth.tar')
-            #         shutil.copyfile(path, best_path)
-            #         print('Saving a best model')
-
-                
     def save_checkpoint_tune(self, checkpoint_dir = None):
         with tune.checkpoint_dir(step = 'iter') as checkpoint_dir:
             path = os.path.join(checkpoint_dir, "checkpoint")
@@ -148,19 +126,18 @@ class RecurrentAEAgent(BaseAgent):
                     'train_loss_parz': self.train_loss_parz}
             torch.save(state, path)
 
-            # Saving better model if any
+            # Saving a better model if any
             if self.is_best:
                 best_path  = os.path.join(checkpoint_dir, 'model_best.pth.tar')
                 shutil.copyfile(path, best_path)
-                print('Saving a best model')
-      
+             
       
     def train(self):
 
         for epoch in range(self.current_epoch, self.config.max_epoch):
 
             self.current_epoch = epoch
-
+            
             # Training epoch
             if self.config.training_type == "one_class":
                 perf_train = self.train_one_epoch()
@@ -244,7 +221,6 @@ class RecurrentAEAgent(BaseAgent):
         epoch_loss = AverageMeter()
 
         with torch.no_grad():
-
             for x, y in tqdm_batch:
                 if self.cuda:
                     x, y = x.cuda(), y.cuda()               
@@ -268,12 +244,6 @@ class RecurrentAEAgent(BaseAgent):
         return epoch_loss
     
     def save_checkpoint(self, filename ='checkpoint.pth.tar', is_best = 0):
-        """
-        Saving the latest checkpoint of the training
-        :param filename: filename which will contain the state
-        :param is_best: flag is it is the best model
-        :return:
-        """
         state = {
             'epoch': self.current_epoch,
             'state_dict': self.model.state_dict(),
@@ -313,10 +283,7 @@ class RecurrentAEAgent(BaseAgent):
             print('Training a new model from scratch')
             
     def run(self):
-        """
-        The main operator
-        :return:
-        """
+
         # Saving config
         save_config(self.config, self.checkpoints_path)
 
@@ -325,9 +292,6 @@ class RecurrentAEAgent(BaseAgent):
 
 
     def finalize(self):
-        """
-        Finalizes all the operations of the 2 Main classes of the process, the operator and the data loader
-        :return:
-        """
+
         self.save_checkpoint()
         self.data_loader.finalize()
