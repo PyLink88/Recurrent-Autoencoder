@@ -42,11 +42,11 @@ class RecurrentAEAgent(BaseAgent):
             # Create an instance from the model
             self.model = RecurrentAE(self.config.latent_dim, self.config)
 
-            # Create instance from the loss
+            # Create an instance from the loss
             self.loss = {'MSE': MSELoss(),
-                        'MAE': MAELoss(),
-                        'MSEAUC': MSEAUCLoss(),
-                        'MAEAUC': MAEAUCLoss()}[self.config.loss]
+                         'MAE': MAELoss(),
+                         'MSEAUC': MSEAUCLoss(),
+                         'MAEAUC': MAEAUCLoss()}[self.config.loss]
 
             # Create instance from the optimizer
             self.optimizer = torch.optim.Adam(self.model.parameters(), lr = self.config.learning_rate)
@@ -61,7 +61,7 @@ class RecurrentAEAgent(BaseAgent):
         self.train_loss_parz = np.array([], dtype=np.float64)
         self.valid_loss = np.array([], dtype = np.float64)
 
-        # Check is cuda is available or not
+        # Checking if cuda is available or not
         self.is_cuda = torch.cuda.is_available()
         # Construct the flag and make sure that cuda is available
         self.cuda = self.is_cuda & self.config.cuda
@@ -86,36 +86,113 @@ class RecurrentAEAgent(BaseAgent):
 
             # Loading chekpoint
             self.load_checkpoint(self.config.checkpoint_file)
-            
-            
-    def train_tune(self, checkpoint_dir = None):
 
+######################   Methods for ray-tune training   #######################
+
+    def train_tune(self, config, checkpoint_dir = None):
+      
         for epoch in range(self.current_epoch, self.config.max_epoch):
 
             self.current_epoch = epoch
 
             # Training epoch
             if self.config.training_type == "one_class":
-                perf_train = self.train_one_epoch()
+                perf_train = self.train_one_epoch_tune()
                 self.train_loss = np.append(self.train_loss, perf_train[0].avg)
             else:
-                perf_train, perf_train_parz = self.train_one_epoch()
+                perf_train, perf_train_parz = self.train_one_epoch_tune(config)
                 self.train_loss = np.append(self.train_loss, perf_train.avg)
                 self.train_loss_parz = np.append(self.train_loss_parz, perf_train_parz.avg)
-
+                
             # Validation
-            perf_valid = self.validate_one_epoch()
+            perf_valid = self.validate_one_epoch_tune()
             self.valid_loss = np.append(self.valid_loss, perf_valid.avg)
-       
+
             # Checking for a better model
             is_best = perf_valid.sum < self.best_valid
             self.is_best = is_best
             if is_best:
                 self.best_valid = perf_valid.sum
 
+            # Saving checkpoint
             self.save_checkpoint_tune(checkpoint_dir)
 
+    def train_one_epoch_tune(self, config = None):
+            """ One epoch training step with tune """
+
+            # Set the model to be in training mode
+            self.model.train()
+
+            # Initialize your average meters
+            epoch_loss = AverageMeter()
+            epoch_loss_parz = AverageMeter()
+
+            # One epoch of training
+            for x, y in self.data_loader.train_loader: 
+                if self.cuda:
+                    x, y = x.cuda(), y.cuda()
+                    
+                # Model
+                x_hat = self.model(x)
+
+                # Current training loss
+                if self.config.training_type == "one_class":
+                    cur_tr_loss = self.loss(x, x_hat)
+                else:
+                    cur_tr_loss, cur_tr_parz_loss = self.loss(config, x, x_hat, y)
+              
+                if np.isnan(float(cur_tr_loss.item())):
+                    raise ValueError('Loss is nan during training...')
+
+                # Optimizer
+                self.optimizer.zero_grad()
+                cur_tr_loss.backward()
+                self.optimizer.step()
+
+                # Updating loss
+                if self.config.training_type == "one_class":
+                    epoch_loss.update(cur_tr_loss.item())
+                else:
+                    epoch_loss.update(cur_tr_loss.item())
+                    epoch_loss_parz.update(cur_tr_parz_loss.item())
+
+            return epoch_loss, epoch_loss_parz
+
+    def validate_one_epoch_tune(self):
+        """ One epoch validation step with tune """
+
+        # Set the model to be in evaluation mode
+        self.model.eval()
+
+        # Initialize your average meters
+        epoch_loss = AverageMeter()
+
+        with torch.no_grad():
+
+            for x, y in self.data_loader.valid_loader:
+                if self.cuda:
+                    x, y = x.cuda(), y.cuda()               
+                    
+                # Model
+                x_hat = self.model(x)
+                
+                # Current training loss
+                if self.config.training_type == "one_class":
+                    cur_val_loss = self.loss(x, x_hat)
+                else:
+                    cur_val_loss = self.loss(0, x, x_hat, y)
+
+                if np.isnan(float(cur_val_loss.item())):
+                    raise ValueError('Loss is nan during validation...')
+
+                # Updating loss
+                epoch_loss.update(cur_val_loss.item())
+
+            #tqdm_batch.close()
+        return epoch_loss
+
     def save_checkpoint_tune(self, checkpoint_dir = None):
+        # Saving current state
         with tune.checkpoint_dir(step = 'iter') as checkpoint_dir:
             path = os.path.join(checkpoint_dir, "checkpoint")
             state = {'epoch': self.current_epoch,
@@ -126,18 +203,27 @@ class RecurrentAEAgent(BaseAgent):
                     'train_loss_parz': self.train_loss_parz}
             torch.save(state, path)
 
-            # Saving a better model if any
-            if self.is_best:
-                best_path  = os.path.join(checkpoint_dir, 'model_best.pth.tar')
-                shutil.copyfile(path, best_path)
-             
-      
-    def train(self):
+        # Saving better model if any
+        if self.is_best:
+            best_path  = os.path.join(checkpoint_dir, 'model_best.pth.tar')
+            shutil.copyfile(path, best_path)
+            
+    def finalize_tune(self, checkpoint_dir = None):
+        """
+        Finalizes all the operations of the 2 Main classes of the process, the operator and the data loader
+        :return:
+        """
+        self.save_checkpoint_tune(checkpoint_dir)
+        self.data_loader.finalize()
 
+######################   Methods for standard training   #######################
+
+    def train(self):
+  
         for epoch in range(self.current_epoch, self.config.max_epoch):
 
             self.current_epoch = epoch
-            
+
             # Training epoch
             if self.config.training_type == "one_class":
                 perf_train = self.train_one_epoch()
@@ -187,7 +273,7 @@ class RecurrentAEAgent(BaseAgent):
             if self.config.training_type == "one_class":
                 cur_tr_loss = self.loss(x, x_hat)
             else:
-                cur_tr_loss, cur_tr_parz_loss = self.loss(x, x_hat, y, self.config.lambda_auc)
+                cur_tr_loss, cur_tr_parz_loss = self.loss(self.config.lambda_auc, x, x_hat, y)
            
             if np.isnan(float(cur_tr_loss.item())):
                 raise ValueError('Loss is nan during training...')
@@ -208,8 +294,10 @@ class RecurrentAEAgent(BaseAgent):
       
         return epoch_loss, epoch_loss_parz
 
+
     def validate_one_epoch(self):
         """ One epoch validation step """
+
         # Initialize tqdm
         tqdm_batch = tqdm(self.data_loader.valid_loader, total = self.data_loader.valid_iterations,
                          desc = "Validation at epoch -{}-".format(self.current_epoch))
@@ -221,6 +309,7 @@ class RecurrentAEAgent(BaseAgent):
         epoch_loss = AverageMeter()
 
         with torch.no_grad():
+
             for x, y in tqdm_batch:
                 if self.cuda:
                     x, y = x.cuda(), y.cuda()               
@@ -232,7 +321,7 @@ class RecurrentAEAgent(BaseAgent):
                 if self.config.training_type == "one_class":
                     cur_val_loss = self.loss(x, x_hat)
                 else:
-                    cur_val_loss = self.loss(x, x_hat, y, self.config.lambda_auc)
+                    cur_val_loss = self.loss(0, x, x_hat, y)
 
                 if np.isnan(float(cur_val_loss.item())):
                     raise ValueError('Loss is nan during validation...')
@@ -244,6 +333,12 @@ class RecurrentAEAgent(BaseAgent):
         return epoch_loss
     
     def save_checkpoint(self, filename ='checkpoint.pth.tar', is_best = 0):
+        """
+        Saving the latest checkpoint of the training
+        :param filename: filename which will contain the state
+        :param is_best: flag is it is the best model
+        :return:
+        """
         state = {
             'epoch': self.current_epoch,
             'state_dict': self.model.state_dict(),
@@ -283,7 +378,10 @@ class RecurrentAEAgent(BaseAgent):
             print('Training a new model from scratch')
             
     def run(self):
-
+        """
+        The main operator
+        :return:
+        """
         # Saving config
         save_config(self.config, self.checkpoints_path)
 
@@ -292,6 +390,9 @@ class RecurrentAEAgent(BaseAgent):
 
 
     def finalize(self):
-
+        """
+        Finalizes all the operations of the 2 Main classes of the process, the operator and the data loader
+        :return:
+        """
         self.save_checkpoint()
         self.data_loader.finalize()
