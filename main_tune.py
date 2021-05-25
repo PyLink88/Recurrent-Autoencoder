@@ -32,7 +32,7 @@ config_rnn_ae = {
     "learning_rate": 0.001,
     "batch_size": 128,
     "batch_size_val": 256,
-    "max_epoch": 10,
+    "max_epoch": 3,
 
     # Loss function
     'loss': 'MAEAUC',
@@ -43,7 +43,7 @@ config_rnn_ae = {
 
     # Folder where to retrieve the data and their names
     # IMPORTANT: the data folder should be a global directory
-    "data_folder": "/content/drive/MyDrive/Recurrent-Autoencoder-auc_loss/Recurrent-Autoencoder-auc_loss/data/ECG5000/numpy/",
+    "data_folder":  "/content/drive/MyDrive/Recurrent-Autoencoder-hyper_tuning_NEW/Recurrent-Autoencoder-hyper_tuning_NEW/data/ECG5000/numpy/",
     "X_train": "X_train.npy",
     "y_train": "y_train.npy",
     "X_train_p": "X_train_p.npy",
@@ -82,6 +82,10 @@ def tune_model(config, checkpoint_dir = None, config_rnn_ae = None):
     
     #os.chdir('/content/drive/MyDrive/Recurrent-Autoencoder-auc_loss/Recurrent-Autoencoder-auc_loss')
 
+    loss_type, lambda_reg = config['loss_param']
+    config['loss_type'] = loss_type
+    config['lambda_reg'] = lambda_reg
+
     # TO DO add the following to directly to the agent class 
     if config["loss_type"] == 'MAE':
       config_rnn_ae.training_type = 'one_class'
@@ -104,7 +108,10 @@ def tune_model(config, checkpoint_dir = None, config_rnn_ae = None):
 
     # Setting the optimizer
     agent.optimizer = torch.optim.Adam(agent.model.parameters(), lr = config["lr"])
-    agent.train_tune(checkpoint_dir)
+    agent.train_tune(config['lambda_reg'], checkpoint_dir)
+
+    # Finalizing
+    agent.finalize_tune(checkpoint_dir)   
     perf = agent.best_valid
 
     # Metric to be reported by tune
@@ -113,27 +120,31 @@ def tune_model(config, checkpoint_dir = None, config_rnn_ae = None):
 if __name__ == "__main__":
     
     # Folder where to save experiments the results
-    my_dir = "/content/drive/MyDrive/Recurrent-Autoencoder-auc_loss/Recurrent-Autoencoder-auc_loss/experiments"
+    my_dir = "/content/drive/MyDrive/Recurrent-Autoencoder-hyper_tuning_NEW/Recurrent-Autoencoder-hyper_tuning_NEW/experiments"
    
     # Project name
     project_name ='ECG_5000' # Give a name like the dataset
-    
-    # Hyperparameters grid
-    param_config = { 
-                    "latent_dim": tune.grid_search([35, 70, 105]),
-                    "lr": tune.grid_search([0.001, 0.01]),
-                    "batch_size": tune.grid_search([256]),
-                    "loss_type": tune.grid_search(['MAE','MAEAUC'])
-    }
-    
-    # Resources
-    resources = {"cpu": 2, "gpu": 1}
-    
-    # Fine tuning
+
+    # Creating nested conditional grid 
+    def _iter_loss():
+        for loss in ['MAE','MAEAUC']:
+            if loss == 'MAE':
+                yield loss, 0
+            else:
+                for lambda_reg in [0.001,0.01, 0.1, 1, 10]:
+                    yield loss, lambda_reg
+
     analysis = tune.run(partial(tune_model, config_rnn_ae = config_rnn_ae), 
-                        config = param_config, 
-                        resources_per_trial = resources, 
-                        name = project_name, 
-                        local_dir = my_dir)# ,resume = True)
-    
-    
+                    config = {"latent_dim": tune.grid_search([35, 70, 105]),
+                              "lr": tune.grid_search([0.001, 0.01]),
+                              "batch_size": tune.grid_search([256]),
+                              "loss_param": tune.grid_search(list(_iter_loss()))}, 
+                    resources_per_trial = {"cpu": 2, "gpu": 1}, 
+                    name = project_name, 
+                    local_dir = my_dir)
+
+
+                    
+
+
+
