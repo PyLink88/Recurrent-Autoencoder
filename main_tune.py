@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 import os
 from ray import tune
 from easydict import EasyDict
@@ -41,8 +42,7 @@ config_rnn_ae = {
     'lambda_auc': 0.1,
     'sampler_random_state': 88,
 
-    # Folder where to retrieve the data and their names
-    # IMPORTANT: the data folder should be a global directory
+    # Folder where to retrieve the data and their names (IMPORTANT: it must be a global dir)
     "data_folder":  "/content/drive/MyDrive/Recurrent-Autoencoder-hyper_tuning_NEW/Recurrent-Autoencoder-hyper_tuning_NEW/data/ECG5000/numpy/",
     "X_train": "X_train.npy",
     "y_train": "y_train.npy",
@@ -142,6 +142,12 @@ if __name__ == "__main__":
                     resources_per_trial = {"cpu": 2, "gpu": 1}, 
                     name = project_name, 
                     local_dir = my_dir)
+
+
+    # Saving all results
+    df = analysis.dataframe()
+    df.to_pickle(my_dir + '/df_analysis.pkl')
+
 
 
                     
