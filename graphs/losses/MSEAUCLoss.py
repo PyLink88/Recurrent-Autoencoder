@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 
-def MSEAUC_approx(x, x_hat, y, lambda_auc):
+def MSEAUC_approx(lambda_auc, x, x_hat, y):
 
     # Computing error for each row
     err = torch.pow(x - x_hat, 2).mean(axis = (1, 2))
